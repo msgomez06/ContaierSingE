@@ -4,7 +4,7 @@ From: ../Ubuntu_Base/ubuntu.sif
 %files
     #files for setting up conda
 	pysing_setup.sh /opt/pysing_setup.sh
-	miniconda.sh /opt/miniconda.sh
+	../common_files/miniconda.sh /opt/miniconda.sh
 	pysing.yml /opt/PySing.yml
 	
 	#files for notebook setup
