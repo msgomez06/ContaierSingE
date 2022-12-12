@@ -30,6 +30,8 @@ From: ../Ubuntu_Base/ubuntu.sif
 
 	bash /opt/pysing_setup.sh
 	
+	/opt/conda/bin/conda init
+	
 	apt-get clean -y
 	apt-get autoremove -y
 

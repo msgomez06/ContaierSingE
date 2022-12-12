@@ -7,7 +7,7 @@ export CONDA_ALWAYS_YES="true"
 
 conda update -n base conda
 conda install -c conda-forge mamba
-mamba env update --file /opt/dev_env.yml --prune
+mamba env update --file /opt/dev_env.yml --prune -q
 
 conda clean --all --yes
 

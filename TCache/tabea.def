@@ -25,7 +25,9 @@ From: ../Ubuntu_Base/ubuntu.sif
 	# Install miniconda00
 	sh /opt/miniconda.sh -b -p /opt/miniconda
 	rm /opt/miniconda.sh
-
+    
+    /opt/miniconda/bin/conda init
+    
 	bash /opt/env_setup.sh
 
 %runscript
