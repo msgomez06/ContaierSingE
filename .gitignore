@@ -1,2 +1,5 @@
 *.sif
 /common_files/*
+*.deb
+*.pin
+*.bup
