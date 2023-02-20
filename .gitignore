@@ -1,4 +1,5 @@
 /container_files/*
+/common_files/miniconda.sh
 *.sif
 *.deb
 *.pin
