@@ -1,0 +1,32 @@
+Bootstrap: localimage
+From: ./container_files/ubuntu.sif
+
+%files
+	#files used to set up CUDA
+	./common_files/cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
+    ./common_files/cuda-repo-ubuntu2204-12-0-local_12.0.0-525.60.13-1_amd64.deb /opt/cuda-repo-ubuntu2204-12-0-local_12.0.0-525.60.13-1_amd64.deb
+
+%post
+    # Following the nvidia installation instructions 
+    # https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=deb_local
+    
+    dpkg -i /opt/cuda-repo-ubuntu2204-12-0-local_12.0.0-525.60.13-1_amd64.deb
+    cp /var/cuda-repo-ubuntu2204-12-0-local/cuda-*-keyring.gpg /usr/share/keyrings/
+
+    apt-get update 
+    
+    # Allows CUDA to be installed without interaction
+    export DEBIAN_FRONTEND=noninteractive
+
+    apt-get -y install cuda
+
+	apt-get clean -y
+	apt-get autoremove -y
+	
+	# CUDA cleanup
+	rm /etc/apt/preferences.d/cuda-repository-pin-600
+    rm /opt/cuda-repo-ubuntu2204-12-0-local_12.0.0-525.60.13-1_amd64.deb
+
+%environment
+
+%help

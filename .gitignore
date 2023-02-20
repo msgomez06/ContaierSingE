@@ -1,5 +1,5 @@
+/container_files/*
 *.sif
-/common_files/*
 *.deb
 *.pin
 *.bup

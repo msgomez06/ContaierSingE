@@ -1,0 +1,135 @@
+Bootstrap: localimage
+From: ../Ubuntu_Base/ubuntu.sif
+
+%files
+    #files for setting up conda
+	pysing_setup.sh /opt/pysing_setup.sh
+	../common_files/miniconda.sh /opt/miniconda.sh
+	#pysing.yml /opt/PySing.yml
+	cuso-pysing.txt /opt/PySing.yml
+	
+	#files for notebook setup
+	pysing_nbk_setup.sh /opt/pysing_nbk_setup.sh
+	
+	#files for notebook run
+	pysing_nbrun.sh /opt/pysing_nbrun.sh
+	
+    # Files used to run Spyder within the container
+    pysing_spyder.sh /opt/spyder.sh
+
+%post
+	apt_srcs_path=/etc/apt/sources.list
+	echo "deb http://ch.archive.ubuntu.com/ubuntu/ jammy universe" >> $apt_srcs_path
+	echo "deb http://ch.archive.ubuntu.com/ubuntu/ jammy multiverse" >> $apt_srcs_path
+	
+	apt-get update
+	apt-get -y install nautilus wget libpci3 qtbase5-dev vim
+
+	# Hyperlink to miniconda installer
+	sh /opt/miniconda.sh -b -p /opt/miniconda
+	rm /opt/miniconda.sh
+
+	bash /opt/pysing_setup.sh
+	
+	/opt/conda/bin/conda init
+	
+	apt-get clean -y
+	apt-get autoremove -y
+
+%environment
+	#Global variables available to all apps
+
+%help
+    Hi, and thank you for trying out the singularity container set up for use
+    in the dawn lab at Université de Lausanne. Documentation for the container
+    is currently not available (apart from this help snippets), but feel free
+    to contact Milton (milton.gomez@unil.ch) for help if you're using this :)
+    
+    There following apps are currently loaded in the container:
+    the "spyder" app
+    the "notebook-setup"
+    the "cluster-notebook" app
+    the "local-notebook" app
+    
+    To get help for each app, type:
+    singularity run-help --app <app_name> <container_name>
+    
+    e.g., if the singularity container is named "PySing.sif", for help with 
+    the spyder app you would type:
+    singularity run-help --app spyder PySing.sif
+    
+    Make sure to mount any directories you need to access (e.g., if you're 
+	using the container on a cluster). @ Université de Lausanne, in 2022,
+	this is done with:
+	export SINGULARITY_BINDPATH="/scratch,/users,/work"
+
+
+
+
+
+
+%appenv notebook-setup
+    # environment variables for setting up jupyter notebook
+    
+%apprun notebook-setup
+	bash /opt/pysing_nbk_setup.sh
+    
+%apphelp notebook-setup
+    Running this app will set up a jupyter notebook configuration file in your
+    profile so you can tunnel to the cluster securely.
+
+
+
+
+
+
+
+%appenv cluster-notebook
+    # environment variables for setting up jupyter notebook
+    
+%apprun cluster-notebook
+	bash /opt/pysing_nbrun.sh
+    
+%apphelp cluster-notebook
+    Running this app will start a jupyter notebook that you can securely tunnel
+    to!
+    
+    Once you have the notebook server running on the cluster, open a separate
+    terminal and write:
+    
+    ssh -N -f -L <my_port_#>:<compute_node>:<my_port_#> <username>@<cluster>
+    
+    e.g., if I had set up my notebook server on the curnagl cluster @ UNIL 
+    using, having been assigned the dna024 node and having selected port 8888,
+    the command would be:
+    ssh -N -f -L localhost:8888:dna024:8888 mgomezd1@curnagl.dcsr.unil.ch
+    
+	Make sure to mount any directories you need to access (e.g., if you're 
+	using the container on a cluster). @ Université de Lausanne, in 2022,
+	this is done with:
+	export SINGULARITY_BINDPATH="/scratch,/users,/work"
+	    	
+
+
+
+
+
+%appenv spyder
+	#environment variables for spyder
+
+%apprun spyder
+	# Runscript for spyder
+    bash /opt/spyder.sh
+    
+    
+%apphelp spyder
+	Running this app will load Spyder 5.3.2 with the dev_env environment
+	that was specified by /opt/dev_env.yml in the conainer. Note that since
+	singularity containers are read only, changes to the .yml file will do
+	nothing.
+	
+	Make sure to mount any directories you need to access (e.g., if you're 
+	using the container on a cluster). @ Université de Lausanne, in 2022,
+	this is done with:
+	export SINGULARITY_BINDPATH="/scratch,/users,/work"
+	
