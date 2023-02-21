@@ -1,43 +1,34 @@
 Bootstrap: localimage
-From: ../Ubuntu_Base/ubuntu.sif
+From: ./container_files/ubuntu.sif
 
 %files
-    #files for setting up conda
-	pysing_setup.sh /opt/pysing_setup.sh
-	../common_files/miniconda.sh /opt/miniconda.sh
-	#pysing.yml /opt/PySing.yml
-	cuso-pysing.txt /opt/PySing.yml
+    #files used to set up conda environment
+    ./common_files/env_setup.sh /opt/env_setup.sh
+    ./conda_env_defs/tfgpu_jax.yml /opt/environment.yml
+    ./common_files/miniconda.sh /opt/miniconda.sh
 	
-	#files for notebook setup
-	pysing_nbk_setup.sh /opt/pysing_nbk_setup.sh
+    # file used to set up secure access to jupyter notebooks
+    ./common_files/nbk_setup.sh /opt/nbk_setup.sh
 	
-	#files for notebook run
-	pysing_nbrun.sh /opt/pysing_nbrun.sh
-	
-    # Files used to run Spyder within the container
-    pysing_spyder.sh /opt/spyder.sh
+    #files used to run spyder / jupyter notebooks
+    ./common_files/spyder.sh /opt/spyder_run.sh
+    ./common_files/jupyter.sh /opt/nbrun.sh
+    ./common_files/batch_runner.sh /opt/batch_runner.sh
 
 %post
-	apt_srcs_path=/etc/apt/sources.list
-	echo "deb http://ch.archive.ubuntu.com/ubuntu/ jammy universe" >> $apt_srcs_path
-	echo "deb http://ch.archive.ubuntu.com/ubuntu/ jammy multiverse" >> $apt_srcs_path
-	
-	apt-get update
-	apt-get -y install nautilus wget libpci3 qtbase5-dev vim
+    
+    # Install miniconda
+    sh /opt/miniconda.sh -b -p /opt/miniconda
+    rm /opt/miniconda.sh
+    
+    /opt/miniconda/bin/conda init
+    
+    bash /opt/env_setup.sh
 
-	# Hyperlink to miniconda installer
-	sh /opt/miniconda.sh -b -p /opt/miniconda
-	rm /opt/miniconda.sh
-
-	bash /opt/pysing_setup.sh
-	
-	/opt/conda/bin/conda init
-	
-	apt-get clean -y
-	apt-get autoremove -y
-
-%environment
-	#Global variables available to all apps
+%runscript
+    echo "The runscript for this container is only informative! Please use the apps"
+    echo "To get help information, use:"
+    echo "singularity run-help <container filename>.sif"
 
 %help
     Hi, and thank you for trying out the singularity container set up for use
@@ -45,11 +36,8 @@ From: ../Ubuntu_Base/ubuntu.sif
     is currently not available (apart from this help snippets), but feel free
     to contact Milton (milton.gomez@unil.ch) for help if you're using this :)
     
-    There following apps are currently loaded in the container:
-    the "spyder" app
-    the "notebook-setup"
-    the "cluster-notebook" app
-    the "local-notebook" app
+    To check which apps are currently loaded in the container:
+    singularity inspect --list-apps <container_name>.sif
     
     To get help for each app, type:
     singularity run-help --app <app_name> <container_name>
@@ -59,9 +47,13 @@ From: ../Ubuntu_Base/ubuntu.sif
     singularity run-help --app spyder PySing.sif
     
     Make sure to mount any directories you need to access (e.g., if you're 
-	using the container on a cluster). @ Université de Lausanne, in 2022,
-	this is done with:
-	export SINGULARITY_BINDPATH="/scratch,/users,/work"
+    using the container on a cluster). @ Université de Lausanne, in 2022,
+    this is done with:
+    export SINGULARITY_BINDPATH="/scratch,/users,/work"
+
+
+%environment
+    #Global variables available to all apps
 
 
 
@@ -72,23 +64,21 @@ From: ../Ubuntu_Base/ubuntu.sif
     # environment variables for setting up jupyter notebook
     
 %apprun notebook-setup
-	bash /opt/pysing_nbk_setup.sh
+    bash /opt/nbk_setup.sh
     
 %apphelp notebook-setup
     Running this app will set up a jupyter notebook configuration file in your
     profile so you can tunnel to the cluster securely.
-
-
-
-
-
-
+    
+    
+    
+    
 
 %appenv cluster-notebook
     # environment variables for setting up jupyter notebook
     
 %apprun cluster-notebook
-	bash /opt/pysing_nbrun.sh
+    bash /opt/nbrun.sh
     
 %apphelp cluster-notebook
     Running this app will start a jupyter notebook that you can securely tunnel
@@ -104,32 +94,45 @@ From: ../Ubuntu_Base/ubuntu.sif
     the command would be:
     ssh -N -f -L localhost:8888:dna024:8888 mgomezd1@curnagl.dcsr.unil.ch
     
-	Make sure to mount any directories you need to access (e.g., if you're 
-	using the container on a cluster). @ Université de Lausanne, in 2022,
-	this is done with:
-	export SINGULARITY_BINDPATH="/scratch,/users,/work"
-	    	
-
-
-
-
-
+    Make sure to mount any directories you need to access (e.g., if you're 
+    using the container on a cluster). @ Université de Lausanne, in 2022,
+    this is done with:
+    export SINGULARITY_BINDPATH="/scratch,/users,/work"
+	
+	
+	
+%appenv batch_runner
+    # environment variables for setting up jupyter notebook
+    
+%apprun batch_runner
+    bash /opt/batch_runner.sh $1
+    
+%apphelp batch_runner
+    Running this app will activate the container notebook and run the script
+    that is passed as an argument. 
+    
+    Make sure to mount any directories you need to access (e.g., if you're 
+    using the container on a cluster). @ Université de Lausanne, in 2022,
+    this is done with:
+    export SINGULARITY_BINDPATH="/scratch,/users,/work"
+	
+	
+	
 %appenv spyder
-	#environment variables for spyder
+    #environment variables for spyder
 
 %apprun spyder
-	# Runscript for spyder
-    bash /opt/spyder.sh
+    # Runscript for spyder
+    bash /opt/spyder_run.sh
     
     
 %apphelp spyder
-	Running this app will load Spyder 5.3.2 with the dev_env environment
-	that was specified by /opt/dev_env.yml in the conainer. Note that since
-	singularity containers are read only, changes to the .yml file will do
-	nothing.
+    Running this app will load Spyder 5.3.2 with the dev_env environment
+    that was specified by /opt/dev_env.yml in the conainer. Note that since
+    singularity containers are read only, changes to the environment are 
+    not possible without rebuilding the container.
 	
-	Make sure to mount any directories you need to access (e.g., if you're 
-	using the container on a cluster). @ Université de Lausanne, in 2022,
-	this is done with:
-	export SINGULARITY_BINDPATH="/scratch,/users,/work"
-	
+    Make sure to mount any directories you need to access (e.g., if you're 
+    using the container on a cluster). @ Université de Lausanne, in 2022,
+    this is done with:
+    export SINGULARITY_BINDPATH="/scratch,/users,/work"

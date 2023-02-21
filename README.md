@@ -13,3 +13,5 @@ Singularity definition files and scripts for use in research projects in the d³
 
 Note that the containers are meant to be built by running singularity from the repo root directory, e.g. with the following command:
 <i>sudo singularity build container_files/container_name.sif definition_files/subFolder/definitionFile.def </i>
+
+Remember to add the appropriate tags (e.g., --nv, --rocm, --nvcli) when building environments that rely on a GPU!
