@@ -1,10 +1,10 @@
 Bootstrap: localimage
-From: ./container_files/ubuntu.sif
+From: ./container_files/cuda.sif
 
 %files
     #files used to set up conda environment
     ./common_files/env_setup.sh /opt/env_setup.sh
-    ./conda_env_defs/frederick.yml /opt/environment.yml
+    ./conda_env_defs/tfgpu_jax.yml /opt/environment.yml
     ./common_files/miniconda.sh /opt/miniconda.sh
 	
     # file used to set up secure access to jupyter notebooks
@@ -17,7 +17,7 @@ From: ./container_files/ubuntu.sif
 
 %post
     
-    # Install miniconda00
+    # Install miniconda
     sh /opt/miniconda.sh -b -p /opt/miniconda
     rm /opt/miniconda.sh
     

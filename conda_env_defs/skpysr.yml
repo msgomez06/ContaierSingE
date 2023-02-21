@@ -1,4 +1,4 @@
-name: skpysr
+name: PySing
 channels:
   - conda-forge
   - defaults
@@ -303,4 +303,4 @@ dependencies:
   - zipp=3.14.0=pyhd8ed1ab_0
   - zlib=1.2.13=h166bdaf_4
   - zstd=1.5.2=h3eb15da_6
-prefix: /home/mgomezd1/Documents/2022-Spring-Machne-learning-course/miniconda3/envs/skpysr
+prefix: /home/mgomezd1/Documents/2022-Spring-Machne-learning-course/miniconda3/envs/PySing
