@@ -1,0 +1,12 @@
+Bootstrap: docker
+From: heartexlabs/label-studio:latest
+
+%files
+
+
+%post
+
+%environment
+
+
+%help

@@ -1,4 +1,4 @@
-name: tabea
+name: PySing
 channels:
   - conda-forge
   - defaults

@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: ../../Ubuntu_Base/cuda.sif
+From: ./container_files/ubuntu.sif
 
 %files
 	#files used to set up conda environment
