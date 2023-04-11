@@ -9,4 +9,5 @@ import sys
 import tensorflow as tf
 
 print(f'{sys.argv[0]} has run succesfully!')
+print(f'argument {sys.argv[1]} has run succesfully!')
 print(tf.config.list_physical_devices())
