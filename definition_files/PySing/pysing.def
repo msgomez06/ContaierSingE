@@ -21,9 +21,8 @@ From: ./container_files/ubuntu.sif
     sh /opt/miniconda.sh -b -p /opt/miniconda
     rm /opt/miniconda.sh
     
-    /opt/miniconda/bin/conda init
-    
     bash /opt/env_setup.sh
+    cp ~/.bashrc /opt/etc/bashrc
 
 %runscript
     echo "The runscript for this container is only informative! Please use the apps"
