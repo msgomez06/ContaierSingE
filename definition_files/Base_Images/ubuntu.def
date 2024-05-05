@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: ubuntu:latest
+From: ubuntu:jammy
 
 %files
 
@@ -10,7 +10,7 @@ From: ubuntu:latest
 	echo "deb http://ch.archive.ubuntu.com/ubuntu/ jammy multiverse" >> $apt_srcs_path
 	
 	apt-get update
-	apt-get -y install nautilus wget libpci3 qtbase5-dev vim nano gcc
+	apt-get -y install nautilus wget libpci3 qtbase5-dev vim nano gcc git
 
 	apt-get clean -y
 	apt-get autoremove -y

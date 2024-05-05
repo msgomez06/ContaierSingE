@@ -1,0 +1,10 @@
+Bootstrap: docker
+From: esmf/esmf-build-release:latest
+
+%files
+
+%post
+
+%environment
+
+%help
